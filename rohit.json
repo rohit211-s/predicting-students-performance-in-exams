@@ -1,0 +1,318 @@
+[
+    {
+        "id": "8d021afc.d926a8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "219ef30c.e0be9c",
+        "type": "function",
+        "z": "8d021afc.d926a8",
+        "name": "PreToken",
+        "func": "global.set(\"un\",msg.payload.un)\nglobal.set(\"gen\",msg.payload.gen)\nglobal.set(\"race\",msg.payload.race)\nglobal.set(\"ploe\",msg.payload.ploe)\nglobal.set(\"lun\",msg.payload.lun)\nglobal.set(\"pc\",msg.payload.pc)\nglobal.set(\"ms\",msg.payload.ms)\nglobal.set(\"rs\",msg.payload.rs)\nglobal.set(\"ws\",msg.payload.ws)\nglobal.set(\"mp\",msg.payload.mp)\nglobal.set(\"rp\",msg.payload.rp)\nglobal.set(\"wp\",msg.payload.wp)\nglobal.set(\"over\",msg.payload.over)\nglobal.set(\"tot\",msg.payload.tot)\nglobal.set(\"per\",msg.payload.per)\nvar apikey=\"6muVNscngy8twRaa5PGkcgCN3iLCBAxe4kCeLpBFNsPb\";\nmsg.headers={\"content-type\":\"application/x-www-form-urlencoded\"}\nmsg.payload={\"grant_type\":\"urn:ibm:params:oauth:grant-type:apikey\",\"apikey\":apikey}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 415,
+        "wires": [
+            [
+                "f784257d.9e7668"
+            ]
+        ]
+    },
+    {
+        "id": "f784257d.9e7668",
+        "type": "http request",
+        "z": "8d021afc.d926a8",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": false,
+        "url": "https://iam.cloud.ibm.com/identity/token",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 479,
+        "y": 403.9999952316284,
+        "wires": [
+            [
+                "c0052cde.482f2"
+            ]
+        ]
+    },
+    {
+        "id": "5ee84195.60c36",
+        "type": "inject",
+        "z": "8d021afc.d926a8",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 125.5,
+        "y": 328.99999809265136,
+        "wires": [
+            [
+                "219ef30c.e0be9c"
+            ]
+        ]
+    },
+    {
+        "id": "22472057.4b655",
+        "type": "debug",
+        "z": "8d021afc.d926a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 918.0000114440918,
+        "y": 145.99999713897705,
+        "wires": []
+    },
+    {
+        "id": "c0052cde.482f2",
+        "type": "function",
+        "z": "8d021afc.d926a8",
+        "name": "Pre Prediction",
+        "func": "var un = global.get('un')\nvar gen = global.get('gen')\nvar race = global.get('race')\nvar ploe = global.get('ploe')\nvar lun = global.get('lun')\nvar pc = global.get('pc')\nvar ms = global.get('ms')\nvar rs = global.get('rs')\nvar ws = global.get('ws')\nvar mp = global.get('mp')\nvar rp = global.get('rp')\nvar wp = global.get('wp')\nvar over = global.get('over')\nvar tot = global.get('tot')\nvar per = global.get('per')\nvar token=msg.payload.access_token\nvar instance_id=\"daf28a06-6d37-4c94-85f3-dbb2b5447a99\"\nmsg.headers={'Content-Type': 'application/json',\"Authorization\":\"Bearer \"+token,\"ML-Instance-ID\":instance_id}\nmsg.payload={\"input_data\": [{\"fields\": [\"Unnamed: 0\", \"gender\", \"race/ethnicity\", \"parental level of education\", \"lunch\", \"test preparation course\", \"math score\", \"reading score\", \"writing score\", \"Math_PassStatus\", \"Reading_PassStatus\", \"Writing_PassStatus\", \"OverAll_PassStatus\", \"Total_Marks\", \"Percentage\"], \"values\": [[un,gen,race,ploe,lun,pc,ms,rs,ws,mp,rp,wp,over,tot,per]]}]}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 676.0000076293945,
+        "y": 366.9999990463257,
+        "wires": [
+            [
+                "f69fd1f6.a9c2"
+            ]
+        ]
+    },
+    {
+        "id": "f69fd1f6.a9c2",
+        "type": "http request",
+        "z": "8d021afc.d926a8",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": false,
+        "url": "https://eu-gb.ml.cloud.ibm.com/v4/deployments/59596cc2-3a25-44de-b480-cc0db55895ae/predictions",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 769.5000076293945,
+        "y": 310.9999990463257,
+        "wires": [
+            [
+                "8d97e5dc.1a91b8",
+                "22472057.4b655"
+            ]
+        ]
+    },
+    {
+        "id": "a891e8ea.331cb8",
+        "type": "ui_form",
+        "z": "8d021afc.d926a8",
+        "name": "",
+        "label": "",
+        "group": "ab7c79d9.e51138",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Unnamed: 0",
+                "value": "un",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "gender ",
+                "value": "gen",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "race/ethnicity",
+                "value": "race",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "parental level of education",
+                "value": "ploe",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "lunch",
+                "value": "lun",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "test preparation course",
+                "value": "pc",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "math score",
+                "value": "ms",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "reading score",
+                "value": "rs",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "writing score",
+                "value": "ws",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Math_PassStatus",
+                "value": "mp",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Reading_PassStatus",
+                "value": "rp",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Writing_PassStatus",
+                "value": "wp",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "OverAll_PassStatus",
+                "value": "over",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Total_Marks",
+                "value": "tot",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Percentage",
+                "value": "per",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "un": "",
+            "gen": "",
+            "race": "",
+            "ploe": "",
+            "lun": "",
+            "pc": "",
+            "ms": "",
+            "rs": "",
+            "ws": "",
+            "mp": "",
+            "rp": "",
+            "wp": "",
+            "over": "",
+            "tot": "",
+            "per": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 71,
+        "y": 457.9999952316284,
+        "wires": [
+            [
+                "219ef30c.e0be9c"
+            ]
+        ]
+    },
+    {
+        "id": "b34a61a9.e6f36",
+        "type": "ui_text",
+        "z": "8d021afc.d926a8",
+        "group": "ab7c79d9.e51138",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "grade",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 797.6000366210937,
+        "y": 463.20000743865966,
+        "wires": []
+    },
+    {
+        "id": "8d97e5dc.1a91b8",
+        "type": "function",
+        "z": "8d021afc.d926a8",
+        "name": "",
+        "func": "msg.payload=msg.payload.predictions[0].values[0][0]\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 629.6000366210937,
+        "y": 206.60000133514404,
+        "wires": [
+            [
+                "22472057.4b655",
+                "b34a61a9.e6f36"
+            ]
+        ]
+    },
+    {
+        "id": "ab7c79d9.e51138",
+        "type": "ui_group",
+        "z": "",
+        "name": "Default",
+        "tab": "c1823ee9.9653e",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "c1823ee9.9653e",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
